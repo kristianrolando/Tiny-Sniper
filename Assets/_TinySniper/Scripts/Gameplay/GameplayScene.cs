@@ -68,9 +68,8 @@ public class GameplayScene : MonoBehaviour
     {
         float percent = _scopeSlider.value / _scopeSlider.maxValue;
         float FOV = scope.minZoom - ((scope.minZoom - scope.maxZoom) * percent);
-        scope.playerCam.fieldOfView = FOV;
         if (FOV < scope.minZoom)
-            scope.OnScoped();
+            scope.OnScoped(FOV);
         else
             scope.OnUnscoped();
     }

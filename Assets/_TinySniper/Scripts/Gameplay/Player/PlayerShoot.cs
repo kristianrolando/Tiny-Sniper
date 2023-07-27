@@ -7,6 +7,7 @@ using Aldo.PubSub;
 
 public class PlayerShoot : MonoBehaviour
 {
+
     [Header("Component")]
     [SerializeField] Camera playerCam;
     [SerializeField] Transform firePoint;
@@ -20,6 +21,7 @@ public class PlayerShoot : MonoBehaviour
     int currentBullet;
     bool isReloading = false;
 
+    public Animator gunAnim;
 
     private void Start()
     {
@@ -112,9 +114,10 @@ public class PlayerShoot : MonoBehaviour
 
     private IEnumerator Reload()
     {
+        gunAnim.SetTrigger("reload");
         AudioManager.Instance.PlaySfx("reload");
         isReloading = true;
-       GameplayScene.Instance._reloadNotifObj.SetActive(true);
+        GameplayScene.Instance._reloadNotifObj.SetActive(true);
         // reloading
         yield return new WaitForSeconds(reloadTime);
         // reload done

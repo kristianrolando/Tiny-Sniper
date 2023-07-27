@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 
 
@@ -10,6 +11,8 @@ using UnityEngine.UI;
 /// </summary>
 public class PlayerScope : MonoBehaviour
 {
+    public static event Action<float, float, float> OnScoping;
+
     public Camera playerCam;
     [SerializeField] private GameObject scopeUI;
     [SerializeField] private GameObject weaponCamera;
@@ -31,12 +34,15 @@ public class PlayerScope : MonoBehaviour
         weaponCamera.SetActive(true);
 
         playerCam.fieldOfView = minZoom;
+        OnScoping?.Invoke(maxZoom, minZoom, playerCam.fieldOfView);
     }
 
-    public void OnScoped()
+    public void OnScoped(float FOV)
     {
         scopeUI.SetActive(true);
         weaponCamera.SetActive(false);
+        playerCam.fieldOfView = FOV;
+        OnScoping?.Invoke(maxZoom, minZoom, playerCam.fieldOfView);
     }
 
 }

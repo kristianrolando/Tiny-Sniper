@@ -8,9 +8,12 @@ using Aldo.PubSub;
 /// </summary>
 public class PlayerMovement : MonoBehaviour
 {
+
     [Header("Sight")]
-    [SerializeField] float sensitivity = 20;
-    [SerializeField] float maxAngelFovX = 90;
+    [SerializeField] float maxSen;
+    [SerializeField] float minSens;
+    public float sensitivity;
+    [SerializeField] float maxAngleFovX = 90;
     [SerializeField] float maxAngleFovY = 60;
 
     [SerializeField] float _rangeXRotation;
@@ -31,14 +34,17 @@ public class PlayerMovement : MonoBehaviour
 
     bool isGameplayStart = false;
     public bool jusOnce = false;
+    private bool _firsInputOnce = false;
 
     private void Awake()
     {
         Subcribe();
+        PlayerScope.OnScoping += UpdateSens;
     }
     private void OnDestroy()
     {
         UnSubribe();
+        PlayerScope.OnScoping -= UpdateSens;
     }
 
     private void Start()
@@ -85,10 +91,11 @@ public class PlayerMovement : MonoBehaviour
             }
 
             yRotation += (_deltaPosTouch.x * sensitivity);
-            yRotation = Mathf.Clamp(yRotation, _rangeYRotation - maxAngleFovY, _rangeYRotation + maxAngelFovX);
+            if (!_firsInputOnce) yRotation = _rangeYRotation; _firsInputOnce = true;
+            yRotation = Mathf.Clamp(yRotation, _rangeYRotation - maxAngleFovX, _rangeYRotation + maxAngleFovX);
 
             xRotation -= (_deltaPosTouch.y * sensitivity);
-            xRotation = Mathf.Clamp(xRotation, _rangeXRotation - maxAngelFovX, _rangeXRotation + maxAngleFovY);
+            xRotation = Mathf.Clamp(xRotation, _rangeXRotation - maxAngleFovY, _rangeXRotation + maxAngleFovY);
 
             transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
 
@@ -123,6 +130,10 @@ public class PlayerMovement : MonoBehaviour
         float y = Random.Range(transform.rotation.eulerAngles.y - _bobbingRange, transform.rotation.eulerAngles.y + _bobbingRange);
         _bobbing = new Vector3(x, y, 0);
         isBobbing = true;
+    }
+    private void UpdateSens(float maxZoom, float minZoom, float current)
+    {
+        sensitivity = Mathf.Abs( minSens + (((current - maxZoom) * (maxSen - minSens)) / (maxZoom - minZoom)));
     }
 
     #region PubSub
