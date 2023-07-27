@@ -57,27 +57,6 @@ public class PlayerMovement : MonoBehaviour
         if(!isHoldBreath)
             BobbingCam();
         TouchInput();
-        //StandAloneInput();
-    }
-
-    private void StandAloneInput()
-    {
-        float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensitivity;
-        float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensitivity;
-
-        if (!GameplayScene.Instance.isUiInteract)
-        {
-            if (mouseX != 0 || mouseY != 0)
-            {
-                yRotation += mouseX;
-                yRotation = Mathf.Clamp(yRotation, _rangeYRotation - maxAngleFovY, _rangeYRotation + maxAngelFovX);
-
-                xRotation -= mouseY;
-                xRotation = Mathf.Clamp(xRotation, _rangeXRotation - maxAngelFovX, _rangeXRotation + maxAngleFovY);
-
-                transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-            }
-        }
     }
 
     private void TouchInput()
